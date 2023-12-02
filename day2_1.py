@@ -77,23 +77,22 @@ parsed = input_parser(input)
 
 #with pandas:
 import pandas as pd
+import numpy as np
 
-df_list = []
-for game_id, game_info in parsed.items():
-    for turn_id, turn_info in game_info.items():
-        print(turn_info)
-        red = turn_info.get('red',0)
-        green = turn_info.get('green',0)
-        blue = turn_info.get('blue',0)
-        df_list += [[game_id, turn_id, red, green, blue]]
+def get_df_from_parsed(parsed):
 
-        
+    df_list = []
+    for game_id, game_info in parsed.items():
+        for turn_id, turn_info in game_info.items():
+            red = turn_info.get('red', np.nan)
+            green = turn_info.get('green', np.nan)
+            blue = turn_info.get('blue', np.nan)
+            df_list += [[game_id, turn_id, red, green, blue]]
 
+    df = pd.DataFrame(df_list, columns = ['game_id', 'turn_id','red','green', 'blue'])
+    return df
 
-print(df_list)
-
-df = pd.DataFrame(df_list, columns = ['game_id', 'turn_id','red','green', 'blue'])
-
+df = get_df_from_parsed(parsed)
 max_colors_per_game = df.groupby('game_id').max()
 
 
